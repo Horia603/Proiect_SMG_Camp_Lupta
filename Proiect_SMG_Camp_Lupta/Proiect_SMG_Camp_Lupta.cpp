@@ -24,6 +24,173 @@
 #pragma comment (lib, "glfw3dll.lib")
 #pragma comment (lib, "glew32.lib")
 #pragma comment (lib, "OpenGL32.lib")
+//#include<glad/glad.h>
+
+/*struct Vertex
+{
+	glm::vec3 position;
+	glm::vec3 normal;
+	glm::vec3 color;
+	glm::vec2 texUV;
+};*/
+/*class EBO
+{
+public:
+	// ID reference of Elements Buffer Object
+	GLuint ID;
+	// Constructor that generates a Elements Buffer Object and links it to indices
+	EBO(std::vector<GLuint>& indices)
+	{
+		glGenBuffers(1, &ID);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ID);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), indices.data(), GL_STATIC_DRAW);
+	}
+
+	// Binds the EBO
+	void Bind()
+	{
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ID);
+	}
+	}
+	// Unbinds the EBO
+	void Unbind()
+	{
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	}
+	// Deletes the EBO
+	void Delete()
+	{
+		glDeleteBuffers(1, &ID);
+	}
+}; */
+/*class VBO
+{
+public:
+	// Reference ID of the Vertex Buffer Object
+	GLuint ID;
+	// Constructor that generates a Vertex Buffer Object and links it to vertices
+	VBO(std::vector<Vertex>& vertices)
+	{
+		glGenBuffers(1, &ID);
+		glBindBuffer(GL_ARRAY_BUFFER, ID);
+		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), vertices.data(), GL_STATIC_DRAW);
+	}
+
+	// Binds the VBO
+	void Bind()
+	{
+		glBindBuffer(GL_ARRAY_BUFFER, ID);
+	}
+	// Unbinds the VBO
+	void Unbind()
+	{
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+	}
+	// Deletes the VBO
+	void Delete() {
+
+		glDeleteBuffers(1, &ID);
+	}
+};*/
+/*class VAO
+{
+public:
+	// ID reference for the Vertex Array Object
+	GLuint ID;
+	// Constructor that generates a VAO ID
+	VAO()
+	{
+		glGenVertexArrays(1, &ID);
+	}
+
+	// Links a VBO Attribute such as a position or color to the VAO
+	void LinkAttrib(VBO& VBO, GLuint layout, GLuint numComponents, GLenum type, GLsizeiptr stride, void* offset)
+	{
+		VBO.Bind();
+		glVertexAttribPointer(layout, numComponents, type, GL_FALSE, stride, offset);
+		glEnableVertexAttribArray(layout);
+		VBO.Unbind();
+	}
+	// Binds the VAO
+	void Bind()
+	{
+		glBindVertexArray(ID);
+	}
+	// Unbinds the VAO
+	void Unbind()
+	{
+		glBindVertexArray(0);
+	}
+	// Deletes the VAO
+	void Delete() {
+		glDeleteVertexArrays(1, &ID);
+	}
+}; */
+
+/*class Mesh
+{
+public:
+	std::vector <Vertex> vertices;
+	std::vector <GLunit> indices;
+	std::vector <Texture> textures;
+
+	VAO VAO;
+	Mesh(std::vector <Vertex>& vertices, std::vector <GLuint>& indices, std::vector <Texture>& textures)
+	{
+		Mesh::vertices = vertices;
+		Mesh::indices = indices;
+		Mesh::textures = textures;
+
+		VAO.Bind();
+		// Generates Vertex Buffer Object and links it to vertices
+		VBO VBO(vertices);
+		// Generates Element Buffer Object and links it to indices
+		EBO EBO(indices);
+		// Links VBO attributes such as coordinates and colors to VAO
+		VAO.LinkAttrib(VBO, 0, 3, GL_FLOAT, sizeof(Vertex), (void*)0);
+		VAO.LinkAttrib(VBO, 1, 3, GL_FLOAT, sizeof(Vertex), (void*)(3 * sizeof(float)));
+		VAO.LinkAttrib(VBO, 2, 3, GL_FLOAT, sizeof(Vertex), (void*)(6 * sizeof(float)));
+		VAO.LinkAttrib(VBO, 3, 2, GL_FLOAT, sizeof(Vertex), (void*)(9 * sizeof(float)));
+		// Unbind all to prevent accidentally modifying them
+		VAO.Unbind();
+		VBO.Unbind();
+		EBO.Unbind();
+	}
+
+	void Draw(Shader& shader, Camera& camera)
+	{
+		// Bind shader to be able to access uniforms
+		shader.Activate();
+		VAO.Bind();
+
+		// Keep track of how many of each type of textures we have
+		unsigned int numDiffuse = 0;
+		unsigned int numSpecular = 0;
+
+		for (unsigned int i = 0; i < textures.size(); i++)
+		{
+			std::string num;
+			std::string type = textures[i].type;
+			if (type == "diffuse")
+			{
+				num = std::to_string(numDiffuse++);
+			}
+			else if (type == "specular")
+			{
+				num = std::to_string(numSpecular++);
+			}
+			textures[i].texUnit(shader, (type + num).c_str(), i);
+			textures[i].Bind();
+		}
+		// Take care of the camera Matrix
+		glUniform3f(glGetUniformLocation(shader.ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z);
+		camera.Matrix(shader, "camMatrix");
+
+		// Draw the actual mesh
+		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+	}
+
+};*/
 bool spin;
 
 const GLfloat SKY_BLUE[] = { 0.5, 0.7, 1.0, 1.0 };
