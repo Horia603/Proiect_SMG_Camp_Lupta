@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.32930.78
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32929.385
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Proiect_SMG_Camp_Lupta", "Proiect_SMG_Camp_Lupta\Proiect_SMG_Camp_Lupta.vcxproj", "{64CA3C1B-1ACC-45C7-8D40-C0806906EBA7}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Refactoring_Camp_Lupta", "Refactoring_Camp_Lupta\Refactoring_Camp_Lupta.vcxproj", "{D025E40F-DAB5-4FBB-8BC0-7EFB46B0CBF8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,14 @@ Global
 		{64CA3C1B-1ACC-45C7-8D40-C0806906EBA7}.Release|x64.Build.0 = Release|x64
 		{64CA3C1B-1ACC-45C7-8D40-C0806906EBA7}.Release|x86.ActiveCfg = Release|Win32
 		{64CA3C1B-1ACC-45C7-8D40-C0806906EBA7}.Release|x86.Build.0 = Release|Win32
+		{D025E40F-DAB5-4FBB-8BC0-7EFB46B0CBF8}.Debug|x64.ActiveCfg = Debug|x64
+		{D025E40F-DAB5-4FBB-8BC0-7EFB46B0CBF8}.Debug|x64.Build.0 = Debug|x64
+		{D025E40F-DAB5-4FBB-8BC0-7EFB46B0CBF8}.Debug|x86.ActiveCfg = Debug|Win32
+		{D025E40F-DAB5-4FBB-8BC0-7EFB46B0CBF8}.Debug|x86.Build.0 = Debug|Win32
+		{D025E40F-DAB5-4FBB-8BC0-7EFB46B0CBF8}.Release|x64.ActiveCfg = Release|x64
+		{D025E40F-DAB5-4FBB-8BC0-7EFB46B0CBF8}.Release|x64.Build.0 = Release|x64
+		{D025E40F-DAB5-4FBB-8BC0-7EFB46B0CBF8}.Release|x86.ActiveCfg = Release|Win32
+		{D025E40F-DAB5-4FBB-8BC0-7EFB46B0CBF8}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
