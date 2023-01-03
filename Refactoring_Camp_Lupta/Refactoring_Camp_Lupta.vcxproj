@@ -166,10 +166,6 @@
     <None Include="light.vert" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="grass3.png" />
-    <Image Include="iarba.png" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
@@ -177,6 +173,12 @@
     <ClInclude Include="Texture.h" />
     <ClInclude Include="VAO.h" />
     <ClInclude Include="VBO.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="grass2.png" />
+    <Image Include="grassSpec.png" />
+    <Image Include="scandura.png" />
+    <Image Include="scanduraSpec.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
