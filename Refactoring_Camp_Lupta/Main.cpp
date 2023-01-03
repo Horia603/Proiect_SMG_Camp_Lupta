@@ -1,4 +1,4 @@
-#include"Mesh.h"
+#include"Model.h"
 
 const unsigned int width = 800;
 const unsigned int height = 800;
@@ -91,8 +91,8 @@ int main(int argc, char** argv)
 
 	Texture textures[]
 	{
-		Texture("grass2.png", "diffuse", 0, GL_RGBA, GL_UNSIGNED_BYTE),
-		Texture("grassSpec.png", "specular", 1, GL_RED, GL_UNSIGNED_BYTE)
+		Texture("grass2.png", "diffuse", 0),
+		Texture("grassSpec.png", "specular", 1)
 	};
 
 	// Generates Shader object using shaders default.vert and default.frag
@@ -119,8 +119,8 @@ int main(int argc, char** argv)
 
 
 	glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	glm::vec3 lightPos = glm::vec3(0.5f, 0.5f, 0.5f);
-	glm::mat4 lightModel = glm::mat4(1.0f);
+	glm::vec3 lightPos = glm::vec3(0.0f, 0.0f, 0.0f);
+	glm::mat4 lightModel = glm::mat4(0.0f);
 	lightModel = glm::translate(lightModel, lightPos);
 
 	glm::vec3 objectPos = glm::vec3(0.0f, 0.0f, 0.0f);
