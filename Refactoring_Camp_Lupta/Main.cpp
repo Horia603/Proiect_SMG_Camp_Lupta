@@ -6,10 +6,10 @@ const unsigned int height = 800;
 // Vertices coordinates
 Vertex vertices[] =
 { //               COORDINATES           /            COLORS          /           TexCoord         /       NORMALS         //
-	Vertex{glm::vec3(-100.0f, 0.0f,  100.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 0.0f)},
-	Vertex{glm::vec3(-100.0f, 0.0f, -100.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 1.0f)},
-	Vertex{glm::vec3(100.0f, 0.0f, -100.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(1.0f, 1.0f)},
-	Vertex{glm::vec3(100.0f, 0.0f,  100.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(1.0f, 0.0f)}
+	Vertex{glm::vec3(-1000.0f, 0.0f,  1000.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 0.0f)},
+	Vertex{glm::vec3(-1000.0f, 0.0f, -1000.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 1.0f)},
+	Vertex{glm::vec3(1000.0f, 0.0f, -1000.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(1.0f, 1.0f)},
+	Vertex{glm::vec3(1000.0f, 0.0f,  1000.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(1.0f, 0.0f)}
 };
 
 // Indices for vertices order
@@ -115,9 +115,6 @@ int main(int argc, char** argv)
 	Mesh light(lightVerts, lightInd, tex);
 
 
-
-
-
 	glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	glm::vec3 lightPos = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::mat4 lightModel = glm::mat4(0.0f);
@@ -145,8 +142,11 @@ int main(int argc, char** argv)
 
 	// Creates camera object
 	Camera camera(width, height, glm::vec3(2.0f, 1.0f, 2.0f));
-	
-	Model model("models/plane2/scene.gltf");
+	glm::vec3 position = glm::vec3(-100.0f, -100.0f, -100.0f);
+	glm::quat rotation = glm::quat(-1.0f, 0.0f, 0.0f, 0.0);
+	glm::vec3 size = glm::vec3(1.0f, 1.0f, 1.0f);
+	glm::mat4 matrix = glm::mat4(1.0f);
+	Model model("models/plane/scene.gltf");
 
 	// Main while loop
 	while (!glfwWindowShouldClose(window))
@@ -166,7 +166,7 @@ int main(int argc, char** argv)
 
 		// Draws different meshes
 		floor.Draw(shaderProgram, camera);
-		light.Draw(lightShader, camera);
+		//light.Draw(lightShader, camera);
 
 
 		// Swap the back buffer with the front buffer

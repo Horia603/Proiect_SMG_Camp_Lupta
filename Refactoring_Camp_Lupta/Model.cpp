@@ -1,6 +1,6 @@
 #include"Model.h"
 
-Model::Model(const char* file)
+Model::Model(const char* file, glm::vec3 position, glm::vec3 size, glm::quat  rotation, glm::mat4 matrix)
 {
 	// Make a JSON object
 	std::string text = get_file_contents(file);
@@ -11,7 +11,7 @@ Model::Model(const char* file)
 	data = getData();
 
 	// Traverse all nodes
-	traverseNode(0);
+	traverseNode(0, position, size, rotation, matrix);
 }
 
 void Model::Draw(Shader& shader, Camera& camera)
@@ -48,7 +48,7 @@ void Model::loadMesh(unsigned int indMesh)
 	meshes.push_back(Mesh(vertices, indices, textures));
 }
 
-void Model::traverseNode(unsigned int nextNode, glm::mat4 matrix)
+void Model::traverseNode(unsigned int nextNode, glm::vec3 m_position, glm::vec3 m_size, glm::quat m_rot, glm::mat4 matrix)
 {
 	// Current node
 	json node = JSON["nodes"][nextNode];
@@ -122,7 +122,7 @@ void Model::traverseNode(unsigned int nextNode, glm::mat4 matrix)
 	if (node.find("children") != node.end())
 	{
 		for (unsigned int i = 0; i < node["children"].size(); i++)
-			traverseNode(node["children"][i], matNextNode);
+			traverseNode(node["children"][i],m_position, m_size, m_rot, matNextNode);
 	}
 }
 

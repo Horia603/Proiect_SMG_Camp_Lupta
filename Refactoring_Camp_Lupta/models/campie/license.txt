@@ -1,0 +1,11 @@
+Model Information:
+* title:	Local Orange Field
+* source:	https://sketchfab.com/3d-models/local-orange-field-26c1fb87f5e74e8c8feed6c26e1de932
+* author:	winz_ehime (https://sketchfab.com/winz_ehime)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Local Orange Field" (https://sketchfab.com/3d-models/local-orange-field-26c1fb87f5e74e8c8feed6c26e1de932) by winz_ehime (https://sketchfab.com/winz_ehime) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
