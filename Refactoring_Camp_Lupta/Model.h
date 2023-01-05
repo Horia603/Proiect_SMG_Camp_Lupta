@@ -11,7 +11,13 @@ class Model
 {
 public:
 	// Loads in a model from a file and stores tha information in 'data', 'JSON', and 'file'
-	Model(const char* file);
+	Model(
+		const char* file, 
+		glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3 size = glm::vec3(1.0f, 1.0f, 1.0f),
+		glm::quat rotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f),
+		glm::mat4 matrix = glm::mat4(1.0f)
+	);
 
 	void Draw(Shader& shader, Camera& camera);
 
@@ -36,7 +42,13 @@ private:
 	void loadMesh(unsigned int indMesh);
 
 	// Traverses a node recursively, so it essentially traverses all connected nodes
-	void traverseNode(unsigned int nextNode, glm::mat4 matrix = glm::mat4(1.0f));
+	void traverseNode(
+		unsigned int nextNode,
+		glm::vec3 position,
+		glm::vec3 size,
+		glm::quat rotation,
+		glm::mat4 matrix
+		);
 
 	// Gets the binary data from a file
 	std::vector<unsigned char> getData();

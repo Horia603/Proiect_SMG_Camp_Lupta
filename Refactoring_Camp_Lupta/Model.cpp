@@ -1,6 +1,6 @@
 #include"Model.h"
 
-Model::Model(const char* file)
+Model::Model(const char* file, glm::vec3 position, glm::vec3 size, glm::quat rotation, glm::mat4 matrix)
 {
 	// Make a JSON object
 	std::string text = get_file_contents(file);
@@ -11,7 +11,7 @@ Model::Model(const char* file)
 	data = getData();
 
 	// Traverse all nodes
-	traverseNode(0);
+	traverseNode(0, position, size, rotation, matrix);
 }
 
 void Model::Draw(Shader& shader, Camera& camera)
@@ -48,13 +48,13 @@ void Model::loadMesh(unsigned int indMesh)
 	meshes.push_back(Mesh(vertices, indices, textures));
 }
 
-void Model::traverseNode(unsigned int nextNode, glm::mat4 matrix)
+void Model::traverseNode(unsigned int nextNode, glm::vec3 m_position, glm::vec3 m_size, glm::quat m_rot, glm::mat4 matrix)
 {
 	// Current node
 	json node = JSON["nodes"][nextNode];
 
 	// Get translation if it exists
-	glm::vec3 translation = glm::vec3(0.0f, 0.0f, 0.0f);
+	glm::vec3 translation = m_position;
 	if (node.find("translation") != node.end())
 	{
 		float transValues[3];
@@ -63,7 +63,7 @@ void Model::traverseNode(unsigned int nextNode, glm::mat4 matrix)
 		translation = glm::make_vec3(transValues);
 	}
 	// Get quaternion if it exists
-	glm::quat rotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
+	glm::quat rotation = m_rot;
 	if (node.find("rotation") != node.end())
 	{
 		float rotValues[4] =
@@ -76,7 +76,7 @@ void Model::traverseNode(unsigned int nextNode, glm::mat4 matrix)
 		rotation = glm::make_quat(rotValues);
 	}
 	// Get scale if it exists
-	glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f);
+	glm::vec3 scale = m_size;
 	if (node.find("scale") != node.end())
 	{
 		float scaleValues[3];
@@ -85,7 +85,7 @@ void Model::traverseNode(unsigned int nextNode, glm::mat4 matrix)
 		scale = glm::make_vec3(scaleValues);
 	}
 	// Get matrix if it exists
-	glm::mat4 matNode = glm::mat4(1.0f);
+	glm::mat4 matNode = matrix;
 	if (node.find("matrix") != node.end())
 	{
 		float matValues[16];
@@ -105,7 +105,7 @@ void Model::traverseNode(unsigned int nextNode, glm::mat4 matrix)
 	sca = glm::scale(sca, scale);
 
 	// Multiply all matrices together
-	glm::mat4 matNextNode = -matrix * matNode * trans * rot * sca;
+	glm::mat4 matNextNode = matrix * matNode * trans * rot * sca;
 
 	// Check if the node contains a mesh and if it does load it
 	if (node.find("mesh") != node.end())
@@ -122,7 +122,7 @@ void Model::traverseNode(unsigned int nextNode, glm::mat4 matrix)
 	if (node.find("children") != node.end())
 	{
 		for (unsigned int i = 0; i < node["children"].size(); i++)
-			traverseNode(node["children"][i], matNextNode);
+			traverseNode(node["children"][i],m_position, m_size, m_rot, matNextNode);
 	}
 }
 
@@ -190,6 +190,7 @@ std::vector<GLuint> Model::getIndices(json accessor)
 
 	// Get properties from the bufferView
 	json bufferView = JSON["bufferViews"][buffViewInd];
+
 	//unsigned int byteOffset = bufferView["byteOffset"];
 	unsigned int byteOffset = bufferView.value("byteOffset", 0);
 
