@@ -178,10 +178,14 @@
     <ClInclude Include="VBO.h" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="grass2.png" />
-    <Image Include="grassSpec.png" />
-    <Image Include="scandura.png" />
-    <Image Include="scanduraSpec.png" />
+    <Image Include="textures\back.png" />
+    <Image Include="textures\bottom.png" />
+    <Image Include="textures\front.png" />
+    <Image Include="textures\grass2.png" />
+    <Image Include="textures\grassSpec.png" />
+    <Image Include="textures\left.png" />
+    <Image Include="textures\right.png" />
+    <Image Include="textures\top.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

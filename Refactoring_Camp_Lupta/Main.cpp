@@ -46,7 +46,7 @@ GLuint lightIndices[] =
 	4, 5, 6,
 	4, 6, 7
 };
- /*
+ 
  float skyboxVertices[] =
 {
 	
@@ -81,14 +81,104 @@ unsigned int skyboxIndices[] =
 	3, 7, 6,
 	6, 2, 3
 };
- */
+ 
 
 int main(int argc, char** argv)
 {
-	//Shader skyboxShader("skybox.vert", "skybox.frag");
-	// std::string parentDir;
-	/*
-	 unsigned int skyboxVAO, skyboxVBO, skyboxEBO;
+	
+	// Initialize GLFW
+	glfwInit();
+
+	// Tell GLFW what version of OpenGL we are using 
+	// In this case we are using OpenGL 3.3
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	// Tell GLFW we are using the CORE profile
+	// So that means we only have the modern functions
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+	// Create a GLFWwindow object of 800 by 800 pixels, naming it "YoutubeOpenGL"
+	GLFWwindow* window = glfwCreateWindow(width, height, "Proiect", NULL, NULL);
+	// Error check if the window fails to create
+	if (window == NULL)
+	{
+		std::cout << "Failed to create GLFW window" << std::endl;
+		glfwTerminate();
+		return -1;
+	}
+	// Introduce the window into the current context
+	glfwMakeContextCurrent(window);
+
+	//Load GLAD so it configures OpenGL
+	gladLoadGL();
+	// Specify the viewport of OpenGL in the Window
+	// In this case the viewport goes from x = 0, y = 0, to x = 800, y = 800
+	glViewport(0, 0, width, height);
+
+
+	Texture textures[]
+	{
+		Texture("textures/grass2.png", "diffuse", 0),
+		Texture("textures/grassSpec.png", "specular", 1)
+	};
+
+	// Generates Shader object using shaders default.vert and default.frag
+	Shader shaderProgram("default.vert", "default.frag");
+	// Store mesh data in vectors for the mesh
+	std::vector <Vertex> verts(vertices, vertices + sizeof(vertices) / sizeof(Vertex));
+	std::vector <GLuint> ind(indices, indices + sizeof(indices) / sizeof(GLuint));
+	std::vector <Texture> tex(textures, textures + sizeof(textures) / sizeof(Texture));
+	
+	// Create floor mesh
+	Mesh floor(verts, ind, tex);
+
+
+	// Shader for light cube
+	Shader lightShader("light.vert", "light.frag");
+	// Store mesh data in vectors for the mesh
+	std::vector <Vertex> lightVerts(lightVertices, lightVertices + sizeof(lightVertices) / sizeof(Vertex));
+	std::vector <GLuint> lightInd(lightIndices, lightIndices + sizeof(lightIndices) / sizeof(GLuint));
+	// Crate light mesh
+	Mesh light(lightVerts, lightInd, tex);
+
+
+	glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	glm::vec3 lightPos = glm::vec3(0.0f, 0.0f, 0.0f);
+	glm::mat4 lightModel = glm::mat4(0.0f);
+	lightModel = glm::translate(lightModel, lightPos);
+
+	glm::vec3 objectPos = glm::vec3(0.0f, 0.0f, 0.0f);
+	glm::mat4 objectModel = glm::mat4(1.0f);
+	objectModel = glm::translate(objectModel, objectPos);
+
+	Shader skyboxShader("skybox.vert", "skybox.frag");
+	glUniform1i(glGetUniformLocation(skyboxShader.ID, "skybox"), 0);
+
+	lightShader.Activate();
+	glUniformMatrix4fv(glGetUniformLocation(lightShader.ID, "model"), 1, GL_FALSE, glm::value_ptr(lightModel));
+	glUniform4f(glGetUniformLocation(lightShader.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
+	shaderProgram.Activate();
+	glUniformMatrix4fv(glGetUniformLocation(shaderProgram.ID, "model"), 1, GL_FALSE, glm::value_ptr(objectModel));
+	glUniform4f(glGetUniformLocation(shaderProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
+	glUniform3f(glGetUniformLocation(shaderProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
+
+
+	// Enables the Depth Buffer
+	glEnable(GL_DEPTH_TEST);
+
+	// Creates camera object
+	Camera camera(width, height, glm::vec3(2.0f, 1.0f, 2.0f));
+
+	glm::vec3 position = glm::vec3(0.0f, 50.0f, -10.0f);
+	glm::quat rotation = glm::quat(1.0f, 0.31f, -0.15f, -0.02f);
+	glm::vec3 size = glm::vec3(1.3f, 1.3f, 1.3f);
+	glm::mat4 matrix = glm::mat4(1.0f);
+	Model model("models/campie/scene.gltf", position, size, rotation, matrix);
+
+	
+	std::string parentDir;
+	
+	unsigned int skyboxVAO, skyboxVBO, skyboxEBO;
 	glGenVertexArrays(1, &skyboxVAO);
 	glGenBuffers(1, &skyboxVBO);
 	glGenBuffers(1, &skyboxEBO);
@@ -105,12 +195,12 @@ int main(int argc, char** argv)
 
 	std::string facesCubemap[6] =
 	{
-		parentDir + "back.jpg",
-		parentDir + "bottom.jpg",
-		parentDir + "left.jpg",
-		parentDir + "right.jpg",
-		parentDir + "front.jpg",
-		parentDir + "top.jpg"
+		"textures/back.png",
+		"textures/bottom.png",
+		"textures/left.png",
+		"textures/right.png",
+		"textures/front.png",
+		"textures/top.png"
 	};
 
 	unsigned int cubemapTexture;
@@ -150,93 +240,7 @@ int main(int argc, char** argv)
 			stbi_image_free(data);
 		}
 	}
-	*/
-	// Initialize GLFW
-	glfwInit();
-
-	// Tell GLFW what version of OpenGL we are using 
-	// In this case we are using OpenGL 3.3
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	// Tell GLFW we are using the CORE profile
-	// So that means we only have the modern functions
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-	// Create a GLFWwindow object of 800 by 800 pixels, naming it "YoutubeOpenGL"
-	GLFWwindow* window = glfwCreateWindow(width, height, "YoutubeOpenGL", NULL, NULL);
-	// Error check if the window fails to create
-	if (window == NULL)
-	{
-		std::cout << "Failed to create GLFW window" << std::endl;
-		glfwTerminate();
-		return -1;
-	}
-	// Introduce the window into the current context
-	glfwMakeContextCurrent(window);
-
-	//Load GLAD so it configures OpenGL
-	gladLoadGL();
-	// Specify the viewport of OpenGL in the Window
-	// In this case the viewport goes from x = 0, y = 0, to x = 800, y = 800
-	glViewport(0, 0, width, height);
-
-
-	Texture textures[]
-	{
-		Texture("grass2.png", "diffuse", 0),
-		Texture("grassSpec.png", "specular", 1)
-	};
-
-	// Generates Shader object using shaders default.vert and default.frag
-	Shader shaderProgram("default.vert", "default.frag");
-	// Store mesh data in vectors for the mesh
-	std::vector <Vertex> verts(vertices, vertices + sizeof(vertices) / sizeof(Vertex));
-	std::vector <GLuint> ind(indices, indices + sizeof(indices) / sizeof(GLuint));
-	std::vector <Texture> tex(textures, textures + sizeof(textures) / sizeof(Texture));
 	
-	// Create floor mesh
-	Mesh floor(verts, ind, tex);
-
-
-	// Shader for light cube
-	Shader lightShader("light.vert", "light.frag");
-	// Store mesh data in vectors for the mesh
-	std::vector <Vertex> lightVerts(lightVertices, lightVertices + sizeof(lightVertices) / sizeof(Vertex));
-	std::vector <GLuint> lightInd(lightIndices, lightIndices + sizeof(lightIndices) / sizeof(GLuint));
-	// Crate light mesh
-	Mesh light(lightVerts, lightInd, tex);
-
-
-	glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	glm::vec3 lightPos = glm::vec3(0.0f, 0.0f, 0.0f);
-	glm::mat4 lightModel = glm::mat4(0.0f);
-	lightModel = glm::translate(lightModel, lightPos);
-
-	glm::vec3 objectPos = glm::vec3(0.0f, 0.0f, 0.0f);
-	glm::mat4 objectModel = glm::mat4(1.0f);
-	objectModel = glm::translate(objectModel, objectPos);
-
-
-	lightShader.Activate();
-	glUniformMatrix4fv(glGetUniformLocation(lightShader.ID, "model"), 1, GL_FALSE, glm::value_ptr(lightModel));
-	glUniform4f(glGetUniformLocation(lightShader.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
-	shaderProgram.Activate();
-	glUniformMatrix4fv(glGetUniformLocation(shaderProgram.ID, "model"), 1, GL_FALSE, glm::value_ptr(objectModel));
-	glUniform4f(glGetUniformLocation(shaderProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
-	glUniform3f(glGetUniformLocation(shaderProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
-
-
-	// Enables the Depth Buffer
-	glEnable(GL_DEPTH_TEST);
-
-	// Creates camera object
-	Camera camera(width, height, glm::vec3(2.0f, 1.0f, 2.0f));
-
-	glm::vec3 position = glm::vec3(0.0f, 50.0f, -10.0f);
-	glm::quat rotation = glm::quat(1.0f, 0.31f, -0.15f, -0.02f);
-	glm::vec3 size = glm::vec3(1.3f, 1.3f, 1.3f);
-	glm::mat4 matrix = glm::mat4(1.0f);
-	Model model("models/campie/scene.gltf", position, size, rotation, matrix);
 
 	// Main while loop
 	while (!glfwWindowShouldClose(window))
