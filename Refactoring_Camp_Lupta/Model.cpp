@@ -105,7 +105,7 @@ void Model::traverseNode(unsigned int nextNode, glm::mat4 matrix)
 	sca = glm::scale(sca, scale);
 
 	// Multiply all matrices together
-	glm::mat4 matNextNode = matrix * matNode * trans * rot * sca;
+	glm::mat4 matNextNode = -matrix * matNode * trans * rot * sca;
 
 	// Check if the node contains a mesh and if it does load it
 	if (node.find("mesh") != node.end())
@@ -190,7 +190,8 @@ std::vector<GLuint> Model::getIndices(json accessor)
 
 	// Get properties from the bufferView
 	json bufferView = JSON["bufferViews"][buffViewInd];
-	unsigned int byteOffset = bufferView["byteOffset"];
+	//unsigned int byteOffset = bufferView["byteOffset"];
+	unsigned int byteOffset = bufferView.value("byteOffset", 0);
 
 	// Get indices with regards to their type: unsigned int, unsigned short, or short
 	unsigned int beginningOfData = byteOffset + accByteOffset;
