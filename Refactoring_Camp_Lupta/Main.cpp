@@ -145,9 +145,8 @@ int main(int argc, char** argv)
 
 	// Creates camera object
 	Camera camera(width, height, glm::vec3(2.0f, 1.0f, 2.0f));
-
-	Model model("models/sword/scene.gltf");
-	Model mapa("models/map/scene.gltf");
+	
+	Model model("models/plane2/scene.gltf");
 
 	// Main while loop
 	while (!glfwWindowShouldClose(window))
@@ -164,7 +163,6 @@ int main(int argc, char** argv)
 		camera.updateMatrix(45.0f, 0.1f, 10000.0f);
 
 		model.Draw(shaderProgram, camera);
-		mapa.Draw(shaderProgram, camera);
 
 		// Draws different meshes
 		floor.Draw(shaderProgram, camera);
