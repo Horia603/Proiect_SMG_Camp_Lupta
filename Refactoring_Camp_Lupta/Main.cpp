@@ -80,15 +80,6 @@ int main(int argc, char** argv)
 	glViewport(0, 0, width, height);
 
 
-
-	std::string strFullExeFileName = argv[0];
-	std::string strExePath;
-	const size_t last_slash_idx = strFullExeFileName.rfind('\'');
-	if (std::string::npos != last_slash_idx) {
-		strExePath = strFullExeFileName.substr(0, last_slash_idx);
-	}
-	const std::string& strTexturePath = strExePath + "\iarba.png";
-
 	Texture textures[]
 	{
 		Texture("grass2.png", "diffuse", 0),
@@ -134,19 +125,17 @@ int main(int argc, char** argv)
 	glUniform3f(glGetUniformLocation(shaderProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
 
 
-
-
-
 	// Enables the Depth Buffer
 	glEnable(GL_DEPTH_TEST);
 
 	// Creates camera object
 	Camera camera(width, height, glm::vec3(2.0f, 1.0f, 2.0f));
-	glm::vec3 position = glm::vec3(-100.0f, -100.0f, -100.0f);
-	glm::quat rotation = glm::quat(-1.0f, 0.0f, 0.0f, 0.0);
-	glm::vec3 size = glm::vec3(1.0f, 1.0f, 1.0f);
+
+	glm::vec3 position = glm::vec3(0.0f, 50.0f, -10.0f);
+	glm::quat rotation = glm::quat(1.0f, 0.31f, -0.15f, -0.02f);
+	glm::vec3 size = glm::vec3(1.3f, 1.3f, 1.3f);
 	glm::mat4 matrix = glm::mat4(1.0f);
-	Model model("models/plane/scene.gltf");
+	Model model("models/campie/scene.gltf", position, size, rotation, matrix);
 
 	// Main while loop
 	while (!glfwWindowShouldClose(window))
@@ -162,11 +151,13 @@ int main(int argc, char** argv)
 		// Updates and exports the camera matrix to the Vertex Shader
 		camera.updateMatrix(45.0f, 0.1f, 10000.0f);
 
+		floor.Draw(shaderProgram, camera);
+		//light.Draw(lightShader, camera);
+
 		model.Draw(shaderProgram, camera);
 
 		// Draws different meshes
-		floor.Draw(shaderProgram, camera);
-		//light.Draw(lightShader, camera);
+		
 
 
 		// Swap the back buffer with the front buffer

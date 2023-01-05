@@ -1,6 +1,6 @@
 #include"Model.h"
 
-Model::Model(const char* file, glm::vec3 position, glm::vec3 size, glm::quat  rotation, glm::mat4 matrix)
+Model::Model(const char* file, glm::vec3 position, glm::vec3 size, glm::quat rotation, glm::mat4 matrix)
 {
 	// Make a JSON object
 	std::string text = get_file_contents(file);
@@ -54,7 +54,7 @@ void Model::traverseNode(unsigned int nextNode, glm::vec3 m_position, glm::vec3 
 	json node = JSON["nodes"][nextNode];
 
 	// Get translation if it exists
-	glm::vec3 translation = glm::vec3(0.0f, 0.0f, 0.0f);
+	glm::vec3 translation = m_position;
 	if (node.find("translation") != node.end())
 	{
 		float transValues[3];
@@ -63,7 +63,7 @@ void Model::traverseNode(unsigned int nextNode, glm::vec3 m_position, glm::vec3 
 		translation = glm::make_vec3(transValues);
 	}
 	// Get quaternion if it exists
-	glm::quat rotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
+	glm::quat rotation = m_rot;
 	if (node.find("rotation") != node.end())
 	{
 		float rotValues[4] =
@@ -76,7 +76,7 @@ void Model::traverseNode(unsigned int nextNode, glm::vec3 m_position, glm::vec3 
 		rotation = glm::make_quat(rotValues);
 	}
 	// Get scale if it exists
-	glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f);
+	glm::vec3 scale = m_size;
 	if (node.find("scale") != node.end())
 	{
 		float scaleValues[3];
@@ -85,7 +85,7 @@ void Model::traverseNode(unsigned int nextNode, glm::vec3 m_position, glm::vec3 
 		scale = glm::make_vec3(scaleValues);
 	}
 	// Get matrix if it exists
-	glm::mat4 matNode = glm::mat4(1.0f);
+	glm::mat4 matNode = matrix;
 	if (node.find("matrix") != node.end())
 	{
 		float matValues[16];
