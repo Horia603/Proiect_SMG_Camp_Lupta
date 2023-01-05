@@ -1,7 +1,4 @@
-﻿// Lab7 - Iluminare Phong simpla.cpp : Defines the entry point for the console application.
-//
-
-#include <stdlib.h>
+﻿#include <stdlib.h>
 #include <stdio.h>
 #include <math.h> 
 

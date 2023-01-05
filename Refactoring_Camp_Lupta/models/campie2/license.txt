@@ -1,0 +1,11 @@
+Model Information:
+* title:	Field
+* source:	https://sketchfab.com/3d-models/field-2d0f3ccc3a5f4576ab40b9d4bb80cf56
+* author:	Forest Run Forever (https://sketchfab.com/2w)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Field" (https://sketchfab.com/3d-models/field-2d0f3ccc3a5f4576ab40b9d4bb80cf56) by Forest Run Forever (https://sketchfab.com/2w) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
