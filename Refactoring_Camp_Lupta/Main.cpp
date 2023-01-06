@@ -182,7 +182,7 @@ int main(int argc, char** argv)
 	matrix = glm::mat4(1.0f);
 	Model plane("models/plane/scene.gltf", position, size, rotation, matrix);
 
-	position = glm::vec3(-300.0f, 0.0f, 500.0f);
+	position = glm::vec3(-200.0f, 0.0f, 400.0f);
 	rotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
 	size = glm::vec3(0.95f, 0.95f, 0.95f);
 	matrix = glm::mat4(1.0f);
@@ -194,11 +194,29 @@ int main(int argc, char** argv)
 	matrix = glm::mat4(1.1f);
 	Model broken_tank("models/destroyed_tank/scene.gltf", position, size, rotation, matrix);
 
-	position = glm::vec3(0.0f, 0.0f, 0.0f);
+	position = glm::vec3(0.0f, -0.3f, -1.02f);
 	rotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
-	size = glm::vec3(1.0f, 1.0f, 1.0f);
+	size = glm::vec3(0.4f);
 	matrix = glm::mat4(1.0f);
-	Model tank3("models/tank3/scene.gltf", position, size, rotation, matrix);
+	Model tank1("models/military_tank/scene.gltf", position, size, rotation, matrix);
+
+	position = glm::vec3(0.0f, -0.20f, -2.02f);
+	rotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
+	size = glm::vec3(0.4f);
+	matrix = glm::mat4(1.0f);
+	Model tank2("models/military_tank/scene.gltf", position, size, rotation, matrix);
+
+	position = glm::vec3(-0.5f, 15.0f, 0.5f);
+	rotation = glm::quat(1.0f, 0.0f, 0.0f, 0.7f);
+	size = glm::vec3(0.7);
+	matrix = glm::mat4(1.0f);
+	Model tank3("models/tiger_tank/scene.gltf", position, size, rotation, matrix);
+
+	position = glm::vec3(-500.0f, 100.0f, 0.0f);
+	rotation = glm::quat(1.0f, 0.0f, 0.0f, 0.3f);
+	size = glm::vec3(1.0f);
+	matrix = glm::mat4(0.35f);
+	Model helicopter("models/helicopter/scene.gltf", position, size, rotation, matrix);
 
 	std::string parentDir;
 	
@@ -289,7 +307,11 @@ int main(int argc, char** argv)
 		plane.Draw(shaderProgram, camera);
 		plane2.Draw(shaderProgram, camera);
 		broken_tank.Draw(shaderProgram, camera);
-		floor.Draw(shaderProgram, camera);
+		tank1.Draw(shaderProgram, camera);
+		tank2.Draw(shaderProgram, camera);
+		tank3.Draw(shaderProgram, camera);
+		helicopter.Draw(shaderProgram, camera);
+		//floor.Draw(shaderProgram, camera);
 		
 		// Swap the back buffer with the front buffer
 		glfwSwapBuffers(window);
