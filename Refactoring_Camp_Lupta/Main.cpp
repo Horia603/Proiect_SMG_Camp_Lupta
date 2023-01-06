@@ -166,7 +166,7 @@ int main(int argc, char** argv)
 	matrix = glm::mat4(1.0f);
 	Model plane("models/plane/scene.gltf", position, size, rotation, matrix);
 
-	position = glm::vec3(-300.0f, 0.0f, 500.0f);
+	position = glm::vec3(-200.0f, 0.0f, 400.0f);
 	rotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
 	size = glm::vec3(0.95f, 0.95f, 0.95f);
 	matrix = glm::mat4(1.0f);
@@ -177,6 +177,30 @@ int main(int argc, char** argv)
 	size = glm::vec3(1.0f);
 	matrix = glm::mat4(1.1f);
 	Model broken_tank("models/destroyed_tank/scene.gltf", position, size, rotation, matrix);
+
+	position = glm::vec3(0.0f, -0.3f, -1.02f);
+	rotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
+	size = glm::vec3(0.4f);
+	matrix = glm::mat4(1.0f);
+	Model tank1("models/military_tank/scene.gltf", position, size, rotation, matrix);
+
+	position = glm::vec3(0.0f, -0.20f, -2.02f);
+	rotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
+	size = glm::vec3(0.4f);
+	matrix = glm::mat4(1.0f);
+	Model tank2("models/military_tank/scene.gltf", position, size, rotation, matrix);
+
+	position = glm::vec3(-0.5f, 15.0f, 0.5f);
+	rotation = glm::quat(1.0f, 0.0f, 0.0f, 0.7f);
+	size = glm::vec3(0.7);
+	matrix = glm::mat4(1.0f);
+	Model tank3("models/tiger_tank/scene.gltf", position, size, rotation, matrix);
+
+	position = glm::vec3(-500.0f, 100.0f, 0.0f);
+	rotation = glm::quat(1.0f, 0.0f, 0.0f, 0.3f);
+	size = glm::vec3(1.0f);
+	matrix = glm::mat4(0.35f);
+	Model helicopter("models/helicopter/scene.gltf", position, size, rotation, matrix);
 
 
 	// Prepare framebuffer rectangle VBO and VAO
@@ -351,12 +375,12 @@ int main(int argc, char** argv)
 
 	std::string facesCubemap[6] =
 	{
-		"textures/back.png",
-		"textures/bottom.png",
-		"textures/left.png",
 		"textures/right.png",
-		"textures/front.png",
-		"textures/top.png"
+		"textures/left.png",
+		"textures/top.png",
+		"textures/bottom.png",
+		"textures/back.png",
+		"textures/front.png"
 	};
 
 	unsigned int cubemapTexture;
@@ -401,6 +425,7 @@ int main(int argc, char** argv)
 	// Main while loop
 	while (!glfwWindowShouldClose(window))
 	{
+
 		// Depth testing needed for Shadow Map
 		glEnable(GL_DEPTH_TEST);
 
@@ -416,7 +441,10 @@ int main(int argc, char** argv)
 		plane.Draw(shadowCubeMapProgram, camera);
 		plane2.Draw(shadowCubeMapProgram, camera);
 		broken_tank.Draw(shadowCubeMapProgram, camera);
-
+		tank1.Draw(shadowCubeMapProgram, camera);
+		tank2.Draw(shadowCubeMapProgram, camera);
+		tank3.Draw(shadowCubeMapProgram, camera);
+		helicopter.Draw(shadowCubeMapProgram, camera);
 
 		// Switch back to the default framebuffer
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -452,7 +480,34 @@ int main(int argc, char** argv)
 		plane.Draw(shaderProgram, camera);
 		plane2.Draw(shaderProgram, camera);
 		broken_tank.Draw(shaderProgram, camera);
-		//floor.Draw(shaderProgram, camera);
+		tank1.Draw(shaderProgram, camera);
+		tank2.Draw(shaderProgram, camera);
+		tank3.Draw(shaderProgram, camera);
+		helicopter.Draw(shaderProgram, camera);
+
+		glDepthFunc(GL_LEQUAL);
+
+		skyboxShader.Activate();
+		glm::mat4 view = glm::mat4(1.0f);
+		glm::mat4 projection = glm::mat4(1.0f);
+		// We make the mat4 into a mat3 and then a mat4 again in order to get rid of the last row and column
+		// The last row and column affect the translation of the skybox (which we don't want to affect)
+		view = glm::mat4(glm::mat3(glm::lookAt(camera->Position, camera->Position + camera->Orientation, camera->Up)));
+		projection = glm::perspective(glm::radians(45.0f), (float)width / height, 0.1f, 100.0f);
+		glUniformMatrix4fv(glGetUniformLocation(skyboxShader.ID, "view"), 1, GL_FALSE, glm::value_ptr(view));
+		glUniformMatrix4fv(glGetUniformLocation(skyboxShader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+
+		// Draws the cubemap as the last object so we can save a bit of performance by discarding all fragments
+		// where an object is present (a depth of 1.0f will always fail against any object's depth value)
+		glBindVertexArray(skyboxVAO);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+		glBindVertexArray(0);
+
+		// Switch back to the normal depth function
+		glDepthFunc(GL_LESS);
+
 
 		// Make it so the multisampling FBO is read while the post-processing FBO is drawn
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, FBO);
