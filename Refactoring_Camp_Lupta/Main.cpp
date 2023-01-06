@@ -215,6 +215,10 @@ int main(int argc, char** argv)
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
 
+
+
+
+
 	// Create Frame Buffer Object
 	unsigned int FBO;
 	glGenFramebuffers(1, &FBO);
@@ -230,7 +234,6 @@ int main(int argc, char** argv)
 	glTexParameteri(GL_TEXTURE_2D_MULTISAMPLE, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); // Prevents edge bleeding
 	glTexParameteri(GL_TEXTURE_2D_MULTISAMPLE, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE); // Prevents edge bleeding
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, framebufferTexture, 0);
-
 
 	// Create Render Buffer Object
 	unsigned int RBO;
@@ -272,7 +275,7 @@ int main(int argc, char** argv)
 	glGenFramebuffers(1, &shadowMapFBO);
 
 	// Texture for Shadow Map FBO
-	
+	unsigned int shadowMapWidth = 2048, shadowMapHeight = 2048;
 	unsigned int shadowMap;
 	glGenTextures(1, &shadowMap);
 	glBindTexture(GL_TEXTURE_2D, shadowMap);
@@ -302,7 +305,8 @@ int main(int argc, char** argv)
 
 	shadowMapProgram.Activate();
 	glUniformMatrix4fv(glGetUniformLocation(shadowMapProgram.ID, "lightProjection"), 1, GL_FALSE, glm::value_ptr(lightProjection));
-	
+
+
 
 	// Framebuffer for Cubemap Shadow Map
 	unsigned int pointShadowMapFBO;
@@ -327,6 +331,7 @@ int main(int argc, char** argv)
 	glDrawBuffer(GL_NONE);
 	glReadBuffer(GL_NONE);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
 
 	// Matrices needed for the light's perspective on all faces of the cubemap
 	glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, farPlane);
@@ -431,6 +436,13 @@ int main(int argc, char** argv)
 
 		// Preparations for the Shadow Map
 		glViewport(0, 0, shadowMapWidth, shadowMapHeight);
+		// Commented code is for Spotlights and Directional Lights
+		//glBindFramebuffer(GL_FRAMEBUFFER, shadowMapFBO);
+		//glClear(GL_DEPTH_BUFFER_BIT);
+
+		//// Draw scene for shadow map
+		//ground.Draw(shadowMapProgram, camera);
+		//trees.Draw(shadowMapProgram, camera);
 
 		// Code for Point Lights
 		glBindFramebuffer(GL_FRAMEBUFFER, pointShadowMapFBO);
@@ -445,7 +457,6 @@ int main(int argc, char** argv)
 		tank2.Draw(shadowCubeMapProgram, camera);
 		tank3.Draw(shadowCubeMapProgram, camera);
 		helicopter.Draw(shadowCubeMapProgram, camera);
-
 		// Switch back to the default framebuffer
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		// Switch back to the default viewport
@@ -469,6 +480,11 @@ int main(int argc, char** argv)
 		shaderProgram.Activate();
 		glUniformMatrix4fv(glGetUniformLocation(shaderProgram.ID, "lightProjection"), 1, GL_FALSE, glm::value_ptr(lightProjection));
 		glUniform1f(glGetUniformLocation(shaderProgram.ID, "farPlane"), farPlane);
+
+		// Bind the Shadow Map
+		/*glActiveTexture(GL_TEXTURE0 + 2);
+		glBindTexture(GL_TEXTURE_2D, shadowMap);
+		glUniform1i(glGetUniformLocation(shaderProgram.ID, "shadowMap"), 2);*/
 
 		// Bind the Cubemap Shadow Map
 		glActiveTexture(GL_TEXTURE0 + 2);
@@ -508,12 +524,12 @@ int main(int argc, char** argv)
 		// Switch back to the normal depth function
 		glDepthFunc(GL_LESS);
 
-
 		// Make it so the multisampling FBO is read while the post-processing FBO is drawn
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, FBO);
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, postProcessingFBO);
 		// Conclude the multisampling and copy it to the post-processing FBO
 		glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+
 
 		// Bind the default framebuffer
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -524,6 +540,7 @@ int main(int argc, char** argv)
 		glActiveTexture(GL_TEXTURE0 + 0);
 		glBindTexture(GL_TEXTURE_2D, postProcessingTexture);
 		glDrawArrays(GL_TRIANGLES, 0, 6);
+
 
 		// Swap the back buffer with the front buffer
 		glfwSwapBuffers(window);
