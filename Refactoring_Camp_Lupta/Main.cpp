@@ -153,12 +153,12 @@ int main()
 	// All the faces of the cubemap (make sure they are in this exact order)
 	std::string facesCubemap[6] =
 	{
-		"textures/right3.jpg",
-		"textures/left3.jpg",
-		"textures/top3.jpg",
-		"textures/bottom3.jpg",
-		"textures/front3.jpg",
-		"textures/back3.jpg"
+		"textures/right.png",
+		"textures/left.png",
+		"textures/top.png",
+		"textures/bottom.png",
+		"textures/back.png",
+		"textures/front.png"
 	};
 
 	// Creates the cubemap texture object
