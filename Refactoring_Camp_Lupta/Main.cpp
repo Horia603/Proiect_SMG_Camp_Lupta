@@ -1,7 +1,8 @@
 #include"Model.h"
 
-unsigned int width = 800;
-unsigned int height = 800;
+unsigned int width = 1200;
+unsigned int height = 1000;
+unsigned int shadowMapWidth = 2048, shadowMapHeight = 2048;
 
 void framebuffer_size_callback(GLFWwindow* window, int m_width, int m_height);
 
@@ -153,11 +154,16 @@ int main(int argc, char** argv)
 	// Creates camera object
 	camera = new Camera(width, height, glm::vec3(2.0f, 1.0f, 2.0f));
 
-	glm::vec3 position = glm::vec3(20.0f, 30.0f, 30.0f);
+	/*glm::vec3 position = glm::vec3(20.0f, 30.0f, 30.0f);
 	glm::quat rotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
 	glm::vec3 size = glm::vec3(1.0f, 1.0f, 1.0f);
 	glm::mat4 matrix = glm::mat4(1.0f);
-	Model model("models/plane/scene.gltf");
+	Model model("models/plane/scene.gltf");*/
+	glm::vec3 position = glm::vec3(-100.0f, -10.0f, -10.0f);
+	glm::quat rotation = glm::quat(1.0f, 0.31f, -0.15f, -0.02f);
+	glm::vec3 size = glm::vec3(1.0f, 1.0f, 1.0f);
+	glm::mat4 matrix = glm::mat4(1.0f);
+	Model model("models/campie/scene.gltf", position, size, rotation, matrix);
 
 	// Prepare framebuffer rectangle VBO and VAO
 	unsigned int rectVAO, rectVBO;
@@ -228,7 +234,7 @@ int main(int argc, char** argv)
 	glGenFramebuffers(1, &shadowMapFBO);
 
 	// Texture for Shadow Map FBO
-	unsigned int shadowMapWidth = 2048, shadowMapHeight = 2048;
+	
 	unsigned int shadowMap;
 	glGenTextures(1, &shadowMap);
 	glBindTexture(GL_TEXTURE_2D, shadowMap);
@@ -393,7 +399,7 @@ int main(int argc, char** argv)
 
 		// Draw scene for shadow map
 		model.Draw(shadowCubeMapProgram, camera);
-		floor.Draw(shadowCubeMapProgram, camera);
+		//floor.Draw(shadowCubeMapProgram, camera);
 
 
 		// Switch back to the default framebuffer
@@ -427,7 +433,7 @@ int main(int argc, char** argv)
 
 		// Draw the normal model
 		model.Draw(shaderProgram, camera);
-		floor.Draw(shaderProgram, camera);
+		//floor.Draw(shaderProgram, camera);
 
 		// Make it so the multisampling FBO is read while the post-processing FBO is drawn
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, FBO);
