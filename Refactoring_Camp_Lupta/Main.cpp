@@ -170,13 +170,36 @@ int main(int argc, char** argv)
 	// Creates camera object
 	camera=new Camera(width, height, glm::vec3(2.0f, 1.0f, 2.0f));
 
-	glm::vec3 position = glm::vec3(0.0f, -10.0f, -10.0f);
-	glm::quat rotation = glm::quat(0.0f, 0.0f, 0.0f, 0.0f);
-	glm::vec3 size = glm::vec3(1.0f, 1.0f, 1.0f);
+	glm::vec3 position = glm::vec3(0.0f, 110.0f, -105.0f);
+	glm::quat rotation = glm::quat(1.0f, 0.31f, -0.2f, -0.03f);
+	glm::vec3 size = glm::vec3(1.45f);
 	glm::mat4 matrix = glm::mat4(1.0f);
-	Model model("models/destroyed_tank/scene.gltf", position, size, rotation, matrix);
+	Model camp("models/campie/scene.gltf", position, size, rotation, matrix);
 
-	
+	position = glm::vec3(0.0f, 0.0f, 80.0f);
+	rotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
+	size = glm::vec3(0.95f);
+	matrix = glm::mat4(1.0f);
+	Model plane("models/plane/scene.gltf", position, size, rotation, matrix);
+
+	position = glm::vec3(-300.0f, 0.0f, 500.0f);
+	rotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
+	size = glm::vec3(0.95f, 0.95f, 0.95f);
+	matrix = glm::mat4(1.0f);
+	Model plane2("models/plane/scene.gltf", position, size, rotation, matrix);
+
+	position = glm::vec3(30.0f, 0.0f, -24.0f);
+	rotation = glm::quat(1.0f, 0.0f, -0.4f, 0.15f);
+	size = glm::vec3(1.0f);
+	matrix = glm::mat4(1.1f);
+	Model broken_tank("models/destroyed_tank/scene.gltf", position, size, rotation, matrix);
+
+	position = glm::vec3(0.0f, 0.0f, 0.0f);
+	rotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
+	size = glm::vec3(1.0f, 1.0f, 1.0f);
+	matrix = glm::mat4(1.0f);
+	Model tank3("models/tank3/scene.gltf", position, size, rotation, matrix);
+
 	std::string parentDir;
 	
 	unsigned int skyboxVAO, skyboxVBO, skyboxEBO;
@@ -257,15 +280,17 @@ int main(int argc, char** argv)
 		// Updates and exports the camera matrix to the Vertex Shader
 		camera->updateMatrix(45.0f, 0.1f, 10000.0f);
 
-		floor.Draw(shaderProgram, camera);
+		//floor.Draw(shaderProgram, camera);
 		//light.Draw(lightShader, camera);
 
-		model.Draw(shaderProgram, camera);
-
-		// Draws different meshes
 		
-
-
+		// Draws different meshes
+		camp.Draw(shaderProgram, camera);
+		plane.Draw(shaderProgram, camera);
+		plane2.Draw(shaderProgram, camera);
+		broken_tank.Draw(shaderProgram, camera);
+		floor.Draw(shaderProgram, camera);
+		
 		// Swap the back buffer with the front buffer
 		glfwSwapBuffers(window);
 		// Take care of all GLFW events
