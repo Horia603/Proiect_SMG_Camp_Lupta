@@ -69,10 +69,10 @@
       <Filter>Resource Files\Shaders</Filter>
     </None>
     <None Include="skybox.vert">
-      <Filter>Source Files</Filter>
+      <Filter>Resource Files\Shaders</Filter>
     </None>
     <None Include="skybox.frag">
-      <Filter>Source Files</Filter>
+      <Filter>Resource Files\Shaders</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -80,9 +80,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Mesh.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Model.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="shaderCLass.h">
@@ -99,6 +96,9 @@
     </ClInclude>
     <ClInclude Include="Texture.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Model.h">
+      <Filter>Resource Files\Shaders</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
