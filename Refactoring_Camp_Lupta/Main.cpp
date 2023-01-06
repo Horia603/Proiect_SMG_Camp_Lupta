@@ -125,9 +125,10 @@ int main(int argc, char** argv)
 	Shader shaderProgram("default.vert", "default.frag");
 	Shader framebufferProgram("framebuffer.vert", "framebuffer.frag");
 	Shader shadowMapProgram("shadowMap.vert", "shadowMap.frag");
+	Shader shadowCubeMapProgram("shadowCubeMap.vert", "shadowCubeMap.frag", "shadowCubeMap.geom");
 
 	glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	glm::vec3 lightPos = glm::vec3(0.5f, 0.5f, 0.5f);
+	glm::vec3 lightPos = glm::vec3(50.0f, 20.5f, 0.0f);
 	
 	shaderProgram.Activate();
 	glUniform4f(glGetUniformLocation(shaderProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
@@ -249,13 +250,62 @@ int main(int argc, char** argv)
 
 
 	// Matrices needed for the light's perspective
-	glm::mat4 orthgonalProjection = glm::ortho(-35.0f, 35.0f, -35.0f, 35.0f, 0.1f, 75.0f);
-	glm::mat4 lightView = glm::lookAt(30.0f * lightPos, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-	glm::mat4 lightProjection = orthgonalProjection * lightView;
+	float farPlane = 1000.0f;
+	glm::mat4 orthgonalProjection = glm::ortho(-35.0f, 35.0f, -35.0f, 35.0f, 0.1f, farPlane);
+	glm::mat4 perspectiveProjection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, farPlane);
+	glm::mat4 lightView = glm::lookAt(lightPos, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+	glm::mat4 lightProjection = perspectiveProjection * lightView;
 
 	shadowMapProgram.Activate();
 	glUniformMatrix4fv(glGetUniformLocation(shadowMapProgram.ID, "lightProjection"), 1, GL_FALSE, glm::value_ptr(lightProjection));
 	
+
+	// Framebuffer for Cubemap Shadow Map
+	unsigned int pointShadowMapFBO;
+	glGenFramebuffers(1, &pointShadowMapFBO);
+
+	// Texture for Cubemap Shadow Map FBO
+	unsigned int depthCubemap;
+	glGenTextures(1, &depthCubemap);
+
+	glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap);
+	for (unsigned int i = 0; i < 6; ++i)
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT,
+			shadowMapWidth, shadowMapHeight, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, pointShadowMapFBO);
+	glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthCubemap, 0);
+	glDrawBuffer(GL_NONE);
+	glReadBuffer(GL_NONE);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	// Matrices needed for the light's perspective on all faces of the cubemap
+	glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, farPlane);
+	glm::mat4 shadowTransforms[] =
+	{
+	shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(1.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0)),
+	shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(-1.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0)),
+	shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0, 1.0, 0.0), glm::vec3(0.0, 0.0, 1.0)),
+	shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0, -1.0, 0.0), glm::vec3(0.0, 0.0, -1.0)),
+	shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0, 0.0, 1.0), glm::vec3(0.0, -1.0, 0.0)),
+	shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0, 0.0, -1.0), glm::vec3(0.0, -1.0, 0.0))
+	};
+	// Export all matrices to shader
+	shadowCubeMapProgram.Activate();
+	glUniformMatrix4fv(glGetUniformLocation(shadowCubeMapProgram.ID, "shadowMatrices[0]"), 1, GL_FALSE, glm::value_ptr(shadowTransforms[0]));
+	glUniformMatrix4fv(glGetUniformLocation(shadowCubeMapProgram.ID, "shadowMatrices[1]"), 1, GL_FALSE, glm::value_ptr(shadowTransforms[1]));
+	glUniformMatrix4fv(glGetUniformLocation(shadowCubeMapProgram.ID, "shadowMatrices[2]"), 1, GL_FALSE, glm::value_ptr(shadowTransforms[2]));
+	glUniformMatrix4fv(glGetUniformLocation(shadowCubeMapProgram.ID, "shadowMatrices[3]"), 1, GL_FALSE, glm::value_ptr(shadowTransforms[3]));
+	glUniformMatrix4fv(glGetUniformLocation(shadowCubeMapProgram.ID, "shadowMatrices[4]"), 1, GL_FALSE, glm::value_ptr(shadowTransforms[4]));
+	glUniformMatrix4fv(glGetUniformLocation(shadowCubeMapProgram.ID, "shadowMatrices[5]"), 1, GL_FALSE, glm::value_ptr(shadowTransforms[5]));
+	glUniform3f(glGetUniformLocation(shadowCubeMapProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
+	glUniform1f(glGetUniformLocation(shadowCubeMapProgram.ID, "farPlane"), farPlane);
+
 	/////////////////////////////////////////////////
 	glm::vec3 objectPos = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::mat4 objectModel = glm::mat4(1.0f);
@@ -331,24 +381,69 @@ int main(int argc, char** argv)
 	// Main while loop
 	while (!glfwWindowShouldClose(window))
 	{
+		// Depth testing needed for Shadow Map
+		glEnable(GL_DEPTH_TEST);
+
+		// Preparations for the Shadow Map
+		glViewport(0, 0, shadowMapWidth, shadowMapHeight);
+
+		// Code for Point Lights
+		glBindFramebuffer(GL_FRAMEBUFFER, pointShadowMapFBO);
+		glClear(GL_DEPTH_BUFFER_BIT);
+
+		// Draw scene for shadow map
+		model.Draw(shadowCubeMapProgram, camera);
+		floor.Draw(shadowCubeMapProgram, camera);
+
+
+		// Switch back to the default framebuffer
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		// Switch back to the default viewport
+		glViewport(0, 0, width, height);
+		// Bind the custom framebuffer
+		glBindFramebuffer(GL_FRAMEBUFFER, FBO);
 		// Specify the color of the background
-		glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
+		glClearColor(pow(0.07f, gamma), pow(0.13f, gamma), pow(0.17f, gamma), 1.0f);
 		// Clean the back buffer and depth buffer
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		// Enable depth testing since it's disabled when drawing the framebuffer rectangle
+		glEnable(GL_DEPTH_TEST);
 
-
-		// Handles camera inputs
+		// Handles camera inputs (delete this if you have disabled VSync)
 		camera->Inputs(window);
 		// Updates and exports the camera matrix to the Vertex Shader
-		camera->updateMatrix(45.0f, 0.1f, 10000.0f);
+		camera->updateMatrix(45.0f, 0.1f, farPlane);
 
+
+		// Send the light matrix to the shader
+		shaderProgram.Activate();
+		glUniformMatrix4fv(glGetUniformLocation(shaderProgram.ID, "lightProjection"), 1, GL_FALSE, glm::value_ptr(lightProjection));
+		glUniform1f(glGetUniformLocation(shaderProgram.ID, "farPlane"), farPlane);
+
+		// Bind the Cubemap Shadow Map
+		glActiveTexture(GL_TEXTURE0 + 2);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap);
+		glUniform1i(glGetUniformLocation(shaderProgram.ID, "shadowCubeMap"), 2);
+
+		// Draw the normal model
+		model.Draw(shaderProgram, camera);
 		floor.Draw(shaderProgram, camera);
 
-		model.Draw(shaderProgram, camera);
+		// Make it so the multisampling FBO is read while the post-processing FBO is drawn
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, FBO);
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, postProcessingFBO);
+		// Conclude the multisampling and copy it to the post-processing FBO
+		glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 
-		// Draws different meshes
-
-
+		// Bind the default framebuffer
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		// Draw the framebuffer rectangle
+		framebufferProgram.Activate();
+		glBindVertexArray(rectVAO);
+		glDisable(GL_DEPTH_TEST); // prevents framebuffer rectangle from being discarded
+		glActiveTexture(GL_TEXTURE0 + 0);
+		glBindTexture(GL_TEXTURE_2D, postProcessingTexture);
+		glDrawArrays(GL_TRIANGLES, 0, 6);
 
 		// Swap the back buffer with the front buffer
 		glfwSwapBuffers(window);
@@ -356,8 +451,12 @@ int main(int argc, char** argv)
 		glfwPollEvents();
 	}
 
+
+
 	// Delete all the objects we've created
 	shaderProgram.Delete();
+	glDeleteFramebuffers(1, &FBO);
+	glDeleteFramebuffers(1, &postProcessingFBO);
 	// Delete window before ending the program
 	glfwDestroyWindow(window);
 	// Terminate GLFW before ending the program

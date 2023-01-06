@@ -164,6 +164,9 @@
     <None Include="default.vert" />
     <None Include="frameBuffer.frag" />
     <None Include="frameBuffer.vert" />
+    <None Include="shadowCubeMap.frag" />
+    <None Include="shadowCubeMap.geom" />
+    <None Include="shadowCubeMap.vert" />
     <None Include="shadowMap.frag" />
     <None Include="shadowMap.vert" />
     <None Include="skybox.frag" />
