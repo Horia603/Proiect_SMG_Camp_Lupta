@@ -1,0 +1,11 @@
+Model Information:
+* title:	Tectonic Fissure Exposure, Reykjanes, Iceland
+* source:	https://sketchfab.com/3d-models/tectonic-fissure-exposure-reykjanes-iceland-d2ebc165b26f42629fb7c5df3b78233e
+* author:	Centre for GIS & Geomatics. (https://sketchfab.com/qubgis)
+
+Model License:
+* license type:	CC-BY-NC-4.0 (http://creativecommons.org/licenses/by-nc/4.0/)
+* requirements:	Author must be credited. No commercial use.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Tectonic Fissure Exposure, Reykjanes, Iceland" (https://sketchfab.com/3d-models/tectonic-fissure-exposure-reykjanes-iceland-d2ebc165b26f42629fb7c5df3b78233e) by Centre for GIS & Geomatics. (https://sketchfab.com/qubgis) licensed under CC-BY-NC-4.0 (http://creativecommons.org/licenses/by-nc/4.0/)

@@ -31,10 +31,13 @@ void Camera::Matrix(Shader& shader, const char* uniform)
 }
 
 
-
 void Camera::Inputs(GLFWwindow* window)
 {
 	// Handles key inputs
+	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+	{
+		glfwSetWindowShouldClose(window, true);
+	}
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 	{
 		Position += speed * Orientation;
@@ -61,11 +64,11 @@ void Camera::Inputs(GLFWwindow* window)
 	}
 	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
 	{
-		speed = 0.1;
+		speed = 4.0;
 	}
 	else if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE)
 	{
-		speed = 0.05f;
+		speed = 2.0f;
 	}
 
 
@@ -115,4 +118,13 @@ void Camera::Inputs(GLFWwindow* window)
 		// Makes sure the next time the camera looks around it doesn't jump
 		firstClick = true;
 	}
+}
+
+void Camera::Reshape(int windowWidth, int windowHeight)
+{
+	width = windowWidth;
+	height = windowHeight;
+
+	// define the viewport transformation
+	glViewport(0, 0, windowWidth, windowHeight);
 }
