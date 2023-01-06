@@ -1,7 +1,9 @@
 #include"Model.h"
 
-const unsigned int width = 800;
-const unsigned int height = 800;
+unsigned int width = 800;
+unsigned int height = 800;
+
+void framebuffer_size_callback(GLFWwindow* window, int m_width, int m_height);
 
 // Vertices coordinates
 Vertex vertices[] =
@@ -81,11 +83,10 @@ unsigned int skyboxIndices[] =
 	3, 7, 6,
 	6, 2, 3
 };
- 
+Camera* camera;
 
 int main(int argc, char** argv)
 {
-	
 	// Initialize GLFW
 	glfwInit();
 
@@ -167,7 +168,7 @@ int main(int argc, char** argv)
 	glEnable(GL_DEPTH_TEST);
 
 	// Creates camera object
-	Camera camera(width, height, glm::vec3(2.0f, 1.0f, 2.0f));
+	camera=new Camera(width, height, glm::vec3(2.0f, 1.0f, 2.0f));
 
 	glm::vec3 position = glm::vec3(0.0f, -10.0f, -10.0f);
 	glm::quat rotation = glm::quat(0.0f, 0.0f, 0.0f, 0.0f);
@@ -241,7 +242,7 @@ int main(int argc, char** argv)
 		}
 	}
 	
-
+	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 	// Main while loop
 	while (!glfwWindowShouldClose(window))
 	{
@@ -252,9 +253,9 @@ int main(int argc, char** argv)
 
 
 		// Handles camera inputs
-		camera.Inputs(window);
+		camera->Inputs(window);
 		// Updates and exports the camera matrix to the Vertex Shader
-		camera.updateMatrix(45.0f, 0.1f, 10000.0f);
+		camera->updateMatrix(45.0f, 0.1f, 10000.0f);
 
 		floor.Draw(shaderProgram, camera);
 		//light.Draw(lightShader, camera);
@@ -281,4 +282,11 @@ int main(int argc, char** argv)
 	// Terminate GLFW before ending the program
 	glfwTerminate();
 	return 0;
+}
+
+void framebuffer_size_callback(GLFWwindow* window, int m_width, int m_height)
+{
+	camera->Reshape(m_width, m_height);
+	width = m_width;
+	height = m_height;
 }

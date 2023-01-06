@@ -31,7 +31,6 @@ void Camera::Matrix(Shader& shader, const char* uniform)
 }
 
 
-
 void Camera::Inputs(GLFWwindow* window)
 {
 	// Handles key inputs
@@ -115,4 +114,13 @@ void Camera::Inputs(GLFWwindow* window)
 		// Makes sure the next time the camera looks around it doesn't jump
 		firstClick = true;
 	}
+}
+
+void Camera::Reshape(int windowWidth, int windowHeight)
+{
+	width = windowWidth;
+	height = windowHeight;
+
+	// define the viewport transformation
+	glViewport(0, 0, windowWidth, windowHeight);
 }

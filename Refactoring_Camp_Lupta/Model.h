@@ -19,7 +19,7 @@ public:
 		glm::mat4 matrix = glm::mat4(1.0f)
 	);
 
-	void Draw(Shader& shader, Camera& camera);
+	void Draw(Shader& shader, Camera* camera);
 
 private:
 	// Variables for easy access
