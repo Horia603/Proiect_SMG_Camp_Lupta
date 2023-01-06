@@ -169,11 +169,11 @@ int main(int argc, char** argv)
 	// Creates camera object
 	Camera camera(width, height, glm::vec3(2.0f, 1.0f, 2.0f));
 
-	glm::vec3 position = glm::vec3(0.0f, 50.0f, -10.0f);
-	glm::quat rotation = glm::quat(1.0f, 0.31f, -0.15f, -0.02f);
-	glm::vec3 size = glm::vec3(1.3f, 1.3f, 1.3f);
+	glm::vec3 position = glm::vec3(0.0f, -10.0f, -10.0f);
+	glm::quat rotation = glm::quat(0.0f, 0.0f, 0.0f, 0.0f);
+	glm::vec3 size = glm::vec3(1.0f, 1.0f, 1.0f);
 	glm::mat4 matrix = glm::mat4(1.0f);
-	Model model("models/campie/scene.gltf", position, size, rotation, matrix);
+	Model model("models/destroyed_tank/scene.gltf", position, size, rotation, matrix);
 
 	
 	std::string parentDir;
